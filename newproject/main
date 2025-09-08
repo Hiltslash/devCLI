@@ -1,0 +1,27 @@
+#!/usr/bin/env python3.12
+import sys
+import os
+from pathlib import Path
+import colorama
+import subprocess
+
+try:
+    lang = sys.argv[1]
+    template = sys.argv[2]
+    name = sys.argv[3]
+except IndexError:
+    print(colorama.Fore.RED + "Usage: np <language> <template> <name>")
+    exit(1)
+
+print("Creating", lang, template, name)
+langs = ["python", "node.js", "web"]
+if lang in langs:
+    os.chdir(Path.home() / f'codingprojects/{lang}/')
+    if template != "none":
+        subprocess.run([f"/Users/beaudavidson/codingprojects/github/devcli/newproject/{template}temp", name])
+    elif template == "none":
+        os.mkdir(name)
+        os.chdir(f"./{name}")
+        with open("main", "w") as file:
+            pass
+    elif template
