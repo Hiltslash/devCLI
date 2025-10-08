@@ -14,6 +14,8 @@ sys.stdout.flush()
 def clear():
     os.system('clear')
 
+
+
 # Determine path to Resources folder inside the app bundle
 if getattr(sys, 'frozen', False):
     # Running inside py2app bundle
@@ -21,6 +23,14 @@ if getattr(sys, 'frozen', False):
 else:
     # Running as a normal script
     BASE_PATH = os.path.dirname(os.path.abspath(__file__))
+
+cc = os.path.expanduser("~/Codingprojects")  # canonical path to your projects
+# top-level project-type directories (e.g. python, web, lua)
+try:
+    dirs = [d for d in os.listdir(cc) if os.path.isdir(os.path.join(cc, d))]
+except Exception:
+    dirs = []
+fils = None
 
 # Inquirer menus
 homemenu = inquirer.List(
@@ -37,10 +47,11 @@ newprojectname = inquirer.Text(
     "npn",
     message="Enter name for new project",
 )
-
+# browse prompts will be created dynamically inside the menu loop so choices reflect
+# current filesystem state (and we can limit to latest 15 modified folders)
 nptype = None
 message = None
-version = 1.0
+version = 1.1
 
 try:
     clear()
@@ -62,6 +73,8 @@ try:
                 sys.stdout.flush()
                 clear()
                 exit(0)
+            elif ans["hm"] == "Navigate Projects":
+                loc = 4
             message = None
 
         elif loc == 1:
@@ -105,6 +118,71 @@ try:
             input("...Press Enter to continue...")
             loc = 0
             clear()
+
+        elif loc == 4:
+            # Refresh project-type directories
+            try:
+                dirs = [d for d in os.listdir(cc) if os.path.isdir(os.path.join(cc, d))]
+            except Exception:
+                dirs = []
+
+            if not dirs:
+                message = f"No project-type directories found in {cc}"
+                loc = 0
+                continue
+
+            # Prompt user to pick a project-type folder
+            browseprojecttype = inquirer.List(
+                "bpt",
+                message="Select a directory",
+                choices=dirs
+            )
+            ans = inquirer.prompt([browseprojecttype])
+            if ans is None:
+                loc = 0
+                continue
+
+            browseprojecttypeANSWER = ans["bpt"]
+            project_dir = os.path.join(cc, browseprojecttypeANSWER)
+
+            # Gather subfolders and sort by modified time (descending), keep only 15 latest
+            try:
+                entries = [
+                    d for d in os.listdir(project_dir)
+                    if os.path.isdir(os.path.join(project_dir, d))
+                ]
+            except Exception:
+                message = f"Unable to list projects in {project_dir}"
+                loc = 0
+                continue
+
+            def mtime(path):
+                try:
+                    return os.path.getmtime(path)
+                except Exception:
+                    return 0
+
+            entries_with_mtime = [(e, mtime(os.path.join(project_dir, e))) for e in entries]
+            entries_with_mtime.sort(key=lambda x: x[1], reverse=True)
+            latest_entries = [e for e, _ in entries_with_mtime][:15]
+
+            if not latest_entries:
+                message = f"No projects found inside {project_dir}"
+                loc = 0
+                continue
+
+            browseprojectselection = inquirer.List(
+                "bps",
+                message=f"Select a project (showing {len(latest_entries)} most recently modified)",
+                choices=latest_entries
+            )
+            ans = inquirer.prompt([browseprojectselection])
+            if ans is None:
+                loc = 0
+                continue
+
+            browseprojectselectionANSWER = ans["bps"]
+            subprocess.run(["code", os.path.join(project_dir, browseprojectselectionANSWER)])
 
 except KeyboardInterrupt:
     sys.stdout.write("\033[?25h")

@@ -5,24 +5,17 @@
 #include <string.h>
 #include <stdlib.h>
 void defaultProj(char *projname) {
-    FILE *file = fopen("main.py", "w");
+    FILE *file = fopen("main.c", "w");
     if (file == NULL) {
-        perror("Failed to create main.py");
+        perror("Failed to create main.c");
     } else {
         fprintf(file,
-            "from time import sleep\nimport os\nimport random\nfrom random import randint\n"
-            "def clear(): os.system('cls' if os.name == 'nt' else 'clear')\n");
+            "#include <stdio.h>\n#include <unistd.h>\n#include <string.h>\n#include <stdlib.h>"
+            "\n\nint main() {\n\n}");
         fclose(file);
-        printf("main.py created inside %s\n", projname);
+        printf("main.c created inside %s\n", projname);
     }
 
-    // Run the external program
-    char *argv[] = {"/Users/beaudavidson/codingprojects/github/devcli/autovenv/runme1.0", "vnv", NULL};
-    execv("/Users/beaudavidson/codingprojects/github/devcli/autovenv/runme1.0", argv);
-
-    // Only reached if execv fails
-    perror("execv failed");
-    exit(1);
 }
 
 
@@ -33,7 +26,7 @@ int main(int argc, char *argv[]) {
     if (argc >= 2) {
         strcpy(projname, argv[1]);
     } else {
-        strcpy(projname, "My Python Project");
+        strcpy(projname, "My C Project");
     }
 
 

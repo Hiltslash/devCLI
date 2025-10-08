@@ -1,9 +1,0 @@
-devcli.py
-devcli_entry.py
-setup.py
-devcli.egg-info/PKG-INFO
-devcli.egg-info/SOURCES.txt
-devcli.egg-info/dependency_links.txt
-devcli.egg-info/entry_points.txt
-devcli.egg-info/requires.txt
-devcli.egg-info/top_level.txt
