@@ -51,7 +51,7 @@ newprojectname = inquirer.Text(
 # current filesystem state (and i can limit to latest 15 modified folders)
 nptype = None
 message = None
-version = 1.1
+version = 1.2
 
 try:
     clear()
