@@ -51,7 +51,7 @@ newprojectname = inquirer.Text(
 # current filesystem state (and i can limit to latest 15 modified folders)
 nptype = None
 message = None
-version = 1.2
+version = "1.1.1"
 
 try:
     clear()
@@ -138,10 +138,9 @@ try:
                 choices=dirs + ["BACK"]
             )
             ans = inquirer.prompt([browseprojecttype])
-            if ans is None or ans == "BACK":
+            if ans is None or ans["bpt"] == "BACK":
                 loc = 0
                 continue
-
             browseprojecttypeANSWER = ans["bpt"]
             project_dir = os.path.join(cc, browseprojecttypeANSWER)
 
@@ -178,7 +177,7 @@ try:
                 choices=latest_entries + ["BACK"]
             )
             ans = inquirer.prompt([browseprojectselection])
-            if ans is None or ans == "BACK":
+            if ans is None or ans["bps"] == "BACK":
                 loc = 0
                 continue
 
