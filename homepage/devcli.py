@@ -1,4 +1,4 @@
-#!/usr/bin/env python3.13
+#!/usr/bin/env python3.14
 
 import os
 import sys
@@ -48,7 +48,7 @@ newprojectname = inquirer.Text(
     message="Enter name for new project",
 )
 # browse prompts will be created dynamically inside the menu loop so choices reflect
-# current filesystem state (and we can limit to latest 15 modified folders)
+# current filesystem state (and i can limit to latest 15 modified folders)
 nptype = None
 message = None
 version = 1.1
@@ -135,15 +135,16 @@ try:
             browseprojecttype = inquirer.List(
                 "bpt",
                 message="Select a directory",
-                choices=dirs
+                choices=dirs + ["BACK"]
             )
             ans = inquirer.prompt([browseprojecttype])
-            if ans is None:
+            if ans is None or ans == "BACK":
                 loc = 0
                 continue
 
             browseprojecttypeANSWER = ans["bpt"]
             project_dir = os.path.join(cc, browseprojecttypeANSWER)
+
 
             # Gather subfolders and sort by modified time (descending), keep only 15 latest
             try:
@@ -174,10 +175,10 @@ try:
             browseprojectselection = inquirer.List(
                 "bps",
                 message=f"Select a project (showing {len(latest_entries)} most recently modified)",
-                choices=latest_entries
+                choices=latest_entries + ["BACK"]
             )
             ans = inquirer.prompt([browseprojectselection])
-            if ans is None:
+            if ans is None or ans == "BACK":
                 loc = 0
                 continue
 
