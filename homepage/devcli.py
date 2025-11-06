@@ -47,11 +47,16 @@ newprojectname = inquirer.Text(
     "npn",
     message="Enter name for new project",
 )
+gitinquiry = inquirer.Confirm(
+    "gi",
+    False,
+    message="Do you want this project to be initialized as a Github Repo?"
+)
 # browse prompts will be created dynamically inside the menu loop so choices reflect
 # current filesystem state (and i can limit to latest 15 modified folders)
 nptype = None
 message = None
-version = "1.1.1"
+version = "1.2"
 
 try:
     clear()
@@ -89,25 +94,42 @@ try:
             ans = inquirer.prompt([newprojectname])
             name = ans["npn"]
 
-            # Path to the executable inside Resources
+             # Path to the executable inside Resources
             exe_path = os.path.join(BASE_PATH, nptype)
             codingprojects_dir = os.path.expanduser("~/Codingprojects")
-
+            clear()
+            i_cant_think_of_a_variable_name = inquirer.prompt([gitinquiry])
+            if i_cant_think_of_a_variable_name["gi"]:
+                gitRepo = True
+                project_type_dir = os.path.join(codingprojects_dir, "github")
+            else:
+                gitRepo = False
             # Map project types to folder names
-            project_type_map = {
-                "Python": "python",
-                "Web (Flask)": "python",
-                "Web (Vanilla)": "web",
-                "Love2D": "lua",
-                "C": "c"
-            }
-            project_type_dir = os.path.join(codingprojects_dir, project_type_map.get(nptype, "misc"))
+                project_type_map = {
+                    "Python": "python",
+                    "Web (Flask)": "python",
+                    "Web (Vanilla)": "web",
+                    "Love2D": "lua",
+                    "C": "c"
+                }
+                project_type_dir = os.path.join(codingprojects_dir, project_type_map.get(nptype, "misc"))
 
             # Run the executable with the new project name as argument
             subprocess.run([exe_path, name], cwd=project_type_dir)
 
+            if gitRepo:
+                gcwd =os.path.join(project_type_dir, name)
+                subprocess.run(["git", "init"], cwd=gcwd)
+                subprocess.run(["git", "branch", "-m", "main"], cwd=gcwd)
+                subprocess.run(["touch", "readme.md"], cwd=gcwd) 
+                subprocess.run(["git", "add", "."], cwd=gcwd)               
+                subprocess.run(["git", "commit", "-m", "Initial Commit"], cwd=gcwd)
+                input()
+                print("Project Setup. Link your repository to github at github.com")
+
             # Open in VS Code
             subprocess.run(["code", f"./{name}"], cwd=project_type_dir)
+
 
             loc = 0
             message = "Complete!"
