@@ -1,4 +1,4 @@
-#!/usr/bin/env python3.14
+#!/usr/bin/env python3
 
 import os
 import sys
@@ -41,7 +41,7 @@ homemenu = inquirer.List(
 newproject = inquirer.List(
     "np",
     message="Select an option",
-    choices=["Python", "Web (Flask)", "Web (Vanilla)", "Love2D", "C", "Back"]
+    choices=["Python", "Web (Flask)", "Web (Vanilla)", "Love2D", "C", "Go", "Back"]
 )
 newprojectname = inquirer.Text(
     "npn",
@@ -56,7 +56,7 @@ gitinquiry = inquirer.Confirm(
 # current filesystem state (and i can limit to latest 15 modified folders)
 nptype = None
 message = None
-version = "1.2"
+version = "1.3"
 
 try:
     clear()
@@ -110,7 +110,8 @@ try:
                     "Web (Flask)": "python",
                     "Web (Vanilla)": "web",
                     "Love2D": "lua",
-                    "C": "c"
+                    "C": "c",
+                    "Go": "go"
                 }
                 project_type_dir = os.path.join(codingprojects_dir, project_type_map.get(nptype, "misc"))
 
