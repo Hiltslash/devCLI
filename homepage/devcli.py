@@ -24,7 +24,7 @@ else:
     # Running as a normal script
     BASE_PATH = os.path.dirname(os.path.abspath(__file__))
 
-cc = os.path.expanduser("~/Codingprojects")  # canonical path to your projects
+cc = os.path.expanduser(f"~/Codingprojects/{datetime.now().year}")  # canonical path to your projects
 # top-level project-type directories (e.g. python, web, lua)
 try:
     dirs = [d for d in os.listdir(cc) if os.path.isdir(os.path.join(cc, d))]
@@ -56,7 +56,7 @@ gitinquiry = inquirer.Confirm(
 # current filesystem state (and i can limit to latest 15 modified folders)
 nptype = None
 message = None
-version = "1.3"
+version = "1.3.1"
 
 try:
     clear()
@@ -96,7 +96,8 @@ try:
 
              # Path to the executable inside Resources
             exe_path = os.path.join(BASE_PATH, nptype)
-            codingprojects_dir = os.path.expanduser("~/Codingprojects")
+            codingprojects_dir = os.path.expanduser(f"~/Codingprojects/{datetime.now().year}") #uhhh idk why i'm redeclaring 
+            #but I don't want to break anything.. so it's staying
             clear()
             i_cant_think_of_a_variable_name = inquirer.prompt([gitinquiry])
             if i_cant_think_of_a_variable_name["gi"]:
@@ -107,7 +108,7 @@ try:
             # Map project types to folder names
                 project_type_map = {
                     "Python": "python",
-                    "Web (Flask)": "python",
+                    "Web (Flask)": "web",
                     "Web (Vanilla)": "web",
                     "Love2D": "lua",
                     "C": "c",
