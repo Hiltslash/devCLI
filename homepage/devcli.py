@@ -41,6 +41,11 @@ homemenu = inquirer.List(
 newproject = inquirer.List(
     "np",
     message="Select an option",
+    choices=["Python", "None", "Web (Flask)", "Web (Vanilla)", "Love2D", "C", "Go", "Back"]
+)
+newproject_none = inquirer.List(
+    "np",
+    message="Select an project type",
     choices=["Python", "Web (Flask)", "Web (Vanilla)", "Love2D", "C", "Go", "Back"]
 )
 newprojectname = inquirer.Text(
@@ -56,7 +61,7 @@ gitinquiry = inquirer.Confirm(
 # current filesystem state (and i can limit to latest 15 modified folders)
 nptype = None
 message = None
-version = "1.3.1"
+version = "1.3.2"
 
 try:
     clear()
@@ -87,8 +92,16 @@ try:
             if ans["np"] == "Back":
                 loc = 0
             else:
-                loc = 2
                 nptype = ans["np"]
+                if nptype == "None":
+                    ans = inquirer.prompt([newproject_none])
+                    if ans["np"] == "Back":
+                        loc = 0
+                    else:
+                        folder = ans["np"]
+                        loc = 2
+                else:
+                    loc = 2
 
         elif loc == 2:
             ans = inquirer.prompt([newprojectname])
@@ -114,10 +127,16 @@ try:
                     "C": "c",
                     "Go": "go"
                 }
-                project_type_dir = os.path.join(codingprojects_dir, project_type_map.get(nptype, "misc"))
+                if nptype != "None":
+                    project_type_dir = os.path.join(codingprojects_dir, project_type_map.get(nptype, "misc"))
+                else:
+                    project_type_dir = os.path.join(codingprojects_dir, project_type_map.get(folder, "misc"))
 
             # Run the executable with the new project name as argument
-            subprocess.run([exe_path, name], cwd=project_type_dir)
+            if nptype != "None":
+                subprocess.run([exe_path, name], cwd=project_type_dir)
+            else:
+                subprocess.run([os.path.join(BASE_PATH, "blank"), name], cwd=project_type_dir)
 
             if gitRepo:
                 gcwd =os.path.join(project_type_dir, name)
